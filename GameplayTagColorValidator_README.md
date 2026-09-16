@@ -125,7 +125,7 @@ Editor Preferences
 **Enable Tag Colors**  
 Master switch for normal Gameplay Tag coloring. Invalid Tag indication remains available independently.
 
-**Show Border**  
+**Show Border Color**  
 Applies the resolved Tag color to the native Gameplay Tag chip border/background.
 
 **Show Text Color**  
