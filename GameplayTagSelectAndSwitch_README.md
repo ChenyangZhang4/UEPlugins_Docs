@@ -2,72 +2,69 @@
 
 **Gameplay Tag Select & Switch** is an Unreal Engine Blueprint editor plugin that adds flexible **Select** and **Switch** nodes driven by Gameplay Tags and Gameplay Tag Containers.
 
-The plugin is designed to feel consistent with Unreal Engine's native Blueprint nodes while providing more flexible Gameplay Tag matching.
+The plugin is designed to integrate naturally with Unreal Engine's Blueprint workflow while providing more flexible Gameplay Tag matching than the built-in Select and Switch nodes.
 
-**Supported Unreal Engine version:** UE 5.8
+**Supported Unreal Engine Version:** UE 5.8
 
-## Features
+---
 
-The plugin provides four Blueprint nodes:
+## Nodes
 
-- **Select (Gameplay Tag)**
-- **Select (Gameplay Tag Container)**
-- **Switch (Gameplay Tag)**
-- **Switch (Gameplay Tag Container)**
+The plugin adds four Blueprint nodes:
 
-The type shown in parentheses represents the **input type** of the node.
+* **Select (Gameplay Tag)**
+* **Select (Gameplay Tag Container)**
+* **Switch (Gameplay Tag)**
+* **Switch (Gameplay Tag Container)**
+
+The type in parentheses represents the node's **input type**.
 
 Each node can independently use either:
 
-- `Gameplay Tag` cases
-- `Gameplay Tag Container` cases
+* Gameplay Tag cases
+* Gameplay Tag Container cases
 
-This allows all four matching combinations:
+This supports all four matching combinations:
 
 ```text
-Gameplay Tag       -> Gameplay Tag
-Gameplay Tag       -> Gameplay Tag Container
-Gameplay TagContainer -> Gameplay Tag
-Gameplay TagContainer -> Gameplay Tag Container
+Gameplay Tag           -> Gameplay Tag
+Gameplay Tag           -> Gameplay Tag Container
+Gameplay Tag Container -> Gameplay Tag
+Gameplay Tag Container -> Gameplay Tag Container
 ```
+
+---
 
 ## Select Nodes
 
 ### Select (Gameplay Tag)
 
-Selects and returns a value based on a single `FGameplayTag`.
+Selects a value based on a single `FGameplayTag`.
 
 ### Select (Gameplay Tag Container)
 
-Selects and returns a value based on an `FGameplayTagContainer`.
+Selects a value based on an `FGameplayTagContainer`.
 
-Both Select nodes use wildcard value pins similarly to Unreal Engine's native **Select** node.
+Select nodes behave similarly to Unreal Engine's native **Select** node.
 
-Connecting a supported value type resolves the wildcard type and propagates it to:
+They provide:
 
 ```text
-Case inputs
+Input
+Exact Match
+Match All      // When applicable
 Default
+Cases...
 Return Value
 ```
 
-Supported value types include standard Blueprint-compatible types such as:
+Cases are evaluated in order.
 
-- Boolean
-- Integer
-- Float
-- Name
-- String
-- Text
-- Enums
-- Structs
-- Object references
-- Class references
-- Other Blueprint-compatible types
-
-The first matching case is selected.
+The **first matching case wins**.
 
 If no case matches, the **Default** value is returned.
+
+---
 
 ## Switch Nodes
 
@@ -81,40 +78,46 @@ Routes execution based on an `FGameplayTagContainer`.
 
 Each configured case creates an execution output.
 
-If none of the configured cases match, execution continues through the **Default** output.
+If no case matches, execution continues through the **Default** output.
 
-The first matching case wins.
+Cases are evaluated in order and the first matching case is used.
+
+---
 
 ## Case Type
 
-Every node provides a **Case Type** option in the Details panel.
+Every node provides a **Case Type** setting in the Details panel.
 
-Available types:
+Available Case Types:
 
 ```text
 Gameplay Tag
 Gameplay Tag Container
 ```
 
-The node input type and Case Type are independent.
+The input type and Case Type are independent.
 
 For example:
 
 ```text
-Input Type:
+Input:
 Gameplay Tag Container
 
 Case Type:
 Gameplay Tag
 ```
 
-checks whether the input container contains a tag matching each configured case.
+checks the input container against individual Gameplay Tag cases.
 
-Changing **Case Type** clears the existing cases because Gameplay Tags and Gameplay Tag Containers are structurally different case types.
+Changing **Case Type** clears all existing cases because Gameplay Tag cases and Gameplay Tag Container cases use different data structures.
+
+---
 
 ## Exact Match
 
 All four nodes expose **Exact Match** directly as a Boolean input pin.
+
+### Exact Match Enabled
 
 ```text
 Exact Match = true
@@ -122,13 +125,15 @@ Exact Match = true
 
 Only exact Gameplay Tag matches are accepted.
 
+### Exact Match Disabled
+
 ```text
 Exact Match = false
 ```
 
-Gameplay Tag hierarchy matching is enabled.
+Gameplay Tag hierarchy matching is allowed.
 
-For example:
+Example:
 
 ```text
 Input:
@@ -138,15 +143,15 @@ Case:
 State.Combat
 ```
 
-With hierarchical matching enabled, the case can match the input.
+With `Exact Match` disabled, the case can match the input using Unreal Engine's normal hierarchical Gameplay Tag matching behavior.
 
-The matching direction follows Unreal Engine's Gameplay Tag matching behavior.
+---
 
 ## Gameplay Tag Container Cases
 
-When **Case Type** is set to `Gameplay Tag Container`, each case may contain multiple Gameplay Tags.
+When **Case Type** is set to `Gameplay Tag Container`, each case can contain multiple Gameplay Tags.
 
-Container cases are displayed directly on the Blueprint node in a compact format:
+Container cases are displayed directly on the node using the format:
 
 ```text
 (3) Character.State.Combat
@@ -158,13 +163,15 @@ Where:
 (3)
 ```
 
-is the total number of Gameplay Tags in the case, and:
+is the number of Gameplay Tags in the container, and:
 
 ```text
 Character.State.Combat
 ```
 
-is the complete first Gameplay Tag in that container.
+is the complete first Gameplay Tag.
+
+The first Gameplay Tag is not truncated.
 
 An empty container is displayed as:
 
@@ -172,9 +179,9 @@ An empty container is displayed as:
 (0) None
 ```
 
-Hovering over a Container Case displays the complete container in its tooltip.
+### Container Tooltip
 
-Example:
+Hovering over a Container Case displays the complete container:
 
 ```text
 Gameplay Tag Container (3)
@@ -184,11 +191,13 @@ Gameplay Tag Container (3)
 • Character.State.Attacking
 ```
 
-This keeps the node compact while preserving full case information when needed.
+This keeps the node readable while still making the complete case contents easily accessible.
+
+---
 
 ## Match All
 
-**Match All** is available when both the node input and Case Type are Gameplay Tag Containers:
+**Match All** is available only when both the input and Case Type are Gameplay Tag Containers:
 
 ```text
 Gameplay Tag Container
@@ -196,7 +205,7 @@ Gameplay Tag Container
 Gameplay Tag Container
 ```
 
-It is exposed directly as a Boolean input pin.
+It is displayed directly as a Boolean input pin.
 
 ### Match All Disabled
 
@@ -204,7 +213,7 @@ It is exposed directly as a Boolean input pin.
 Match All = false
 ```
 
-The case matches when **any** required Gameplay Tag matches the input container.
+The case matches when **any** Gameplay Tag in the Case Container matches the input container.
 
 ### Match All Enabled
 
@@ -212,9 +221,9 @@ The case matches when **any** required Gameplay Tag matches the input container.
 Match All = true
 ```
 
-The case matches only when **all** required Gameplay Tags match the input container.
+The case matches only when **all** Gameplay Tags in the Case Container match the input container.
 
-For example:
+Example:
 
 ```text
 Input Container:
@@ -235,59 +244,168 @@ Match All = true
 
 the case matches because both required tags are present.
 
-## Matching Behavior
+---
 
-The four input/case combinations behave as follows.
+## Matching Rules
 
 ### Gameplay Tag -> Gameplay Tag
-
-The input Gameplay Tag is compared against the case Gameplay Tag.
 
 ```text
 Input Tag matches Case Tag
 ```
 
+---
+
 ### Gameplay Tag -> Gameplay Tag Container
 
-The input Gameplay Tag is compared against the Gameplay Tags contained in the case.
-
-The case matches when the input matches at least one tag in the Case Container.
-
 ```text
-Input Tag matches ANY Case Tag
+Input Tag matches ANY Tag in the Case Container
 ```
+
+---
 
 ### Gameplay Tag Container -> Gameplay Tag
 
-The Gameplay Tags in the input container are checked against the case Gameplay Tag.
-
-The case matches when at least one input tag matches the case.
-
 ```text
-ANY Input Tag matches Case Tag
+ANY Tag in the Input Container matches the Case Tag
 ```
+
+---
 
 ### Gameplay Tag Container -> Gameplay Tag Container
 
-The input container is matched against the Case Container.
-
-Behavior is controlled by **Match All**:
+When `Match All` is disabled:
 
 ```text
-Match All = false
-    ANY Case Tag must match
-
-Match All = true
-    ALL Case Tags must match
+ANY Case Tag must match
 ```
 
-**Exact Match** controls whether hierarchical Gameplay Tag matching is allowed in all of these combinations.
+When `Match All` is enabled:
+
+```text
+ALL Case Tags must match
+```
+
+`Exact Match` controls whether exact or hierarchical Gameplay Tag matching is used.
+
+---
+
+## Wildcard Select Values
+
+Select nodes use wildcard value pins similar to Unreal Engine's native Select node.
+
+The following pins share the same resolved value type:
+
+```text
+Cases
+Default
+Return Value
+```
+
+Supported types include standard Blueprint-compatible types such as:
+
+* Boolean
+* Integer
+* Float
+* Name
+* String
+* Text
+* Enums
+* Structs
+* Object references
+* Class references
+* Other Blueprint-compatible types
+
+Connecting a typed value resolves the wildcard value type for the node.
+
+---
+
+## Persistent Value Type
+
+Once a Select node's wildcard value type has been resolved, the type is retained.
+
+For example:
+
+```text
+Wildcard
+   ↓
+Connect Text
+   ↓
+Text
+```
+
+If the connection is later removed:
+
+```text
+Text
+   ↓
+Disconnect
+   ↓
+Text
+```
+
+the node remains typed as `Text`.
+
+The value type is also preserved when:
+
+* Rebuilding cases
+* Refreshing the node
+* Saving and reopening the Blueprint
+* Reopening the Unreal Editor
+
+This avoids unnecessary wildcard resets while editing Blueprint graphs.
+
+---
+
+## Reset Value Type
+
+Select nodes provide a context-menu action:
+
+```text
+Reset Value Type
+```
+
+Use this when you want the node to return to Wildcard and resolve a different value type.
+
+The action is available when the value pins are not connected.
+
+Example:
+
+```text
+Text
+   ↓
+Reset Value Type
+   ↓
+Wildcard
+```
+
+You can then connect a new type and allow the node to resolve again.
+
+This separates two different operations clearly:
+
+```text
+Disconnect
+```
+
+means:
+
+> Keep the current value type.
+
+While:
+
+```text
+Reset Value Type
+```
+
+means:
+
+> Return the node to Wildcard.
+
+---
 
 ## Literal Select Inputs
 
-Select nodes support an additional **Literal** option when the resolved output type is a reference type for which literal/value case inputs are supported.
-
-The option appears in the node's Details panel only when relevant.
+When a Select node resolves to a supported reference-style type, the Details panel can expose the **Literal** option.
 
 ### Literal Disabled
 
@@ -295,9 +413,7 @@ The option appears in the node's Details panel only when relevant.
 Literal = false
 ```
 
-Case inputs preserve the reference-style pin behavior.
-
-For example, a Text reference output may use Text reference input pins.
+Case inputs preserve reference-style pin behavior.
 
 ### Literal Enabled
 
@@ -307,29 +423,31 @@ Literal = true
 
 Case inputs use normal value pins instead.
 
-For types such as `Text`, this allows values to be entered directly into the node:
+For example, with `Text`:
 
 ```text
-Case A    [Attack]
-Case B    [Defend]
-Case C    [Rest]
+Case 1    [Attack]
+Case 2    [Defend]
+Case 3    [Rest]
 ```
 
-The option is kept in the Details panel because it changes the structure and editing behavior of the case pins rather than the matching rule itself.
+can be entered directly into the node.
+
+The **Literal** option is kept in the Details panel because it changes the structure and editing behavior of the value pins rather than the Gameplay Tag matching rule.
+
+---
 
 ## Case Priority
 
-Cases are evaluated in their configured order.
+Cases are evaluated from top to bottom.
 
-The **first matching case wins**.
+The first matching case wins.
 
-This is especially important when hierarchical matching is enabled.
+This is especially important when `Exact Match` is disabled.
 
-For example:
+Example:
 
 ```text
-Cases:
-
 0. Character.State.Combat
 1. Character.State
 2. Character
@@ -341,22 +459,23 @@ Input:
 Character.State.Combat.Attacking
 ```
 
-may satisfy multiple cases when `Exact Match` is disabled.
+may match more than one case.
 
-The first matching case in the list is selected.
+The first matching case in the configured list is selected.
 
-## Blueprint Integration
+---
 
-Gameplay Tag Select & Switch is designed to integrate naturally with the Blueprint editor.
+## Blueprint Editor Integration
 
-The nodes:
+The plugin uses concise node names so that they remain easy to search while staying visually distinct from Unreal Engine's built-in nodes.
 
-- Use familiar native-style Select and Switch presentation
-- Appear in appropriate Blueprint Action Menu categories
-- Can be found easily by searching for `Select` or `Switch`
-- Use concise names that remain visually distinct from Unreal Engine's native `Switch on ...` nodes
+Searching for:
 
-Example search results:
+```text
+Select
+```
+
+can show:
 
 ```text
 Select
@@ -364,13 +483,23 @@ Select (Gameplay Tag)
 Select (Gameplay Tag Container)
 ```
 
-and:
+Searching for:
+
+```text
+Switch
+```
+
+can show:
 
 ```text
 Switch on Gameplay Tag
 Switch (Gameplay Tag)
 Switch (Gameplay Tag Container)
 ```
+
+The plugin nodes use native-style Blueprint presentation and familiar Select / Switch behavior.
+
+---
 
 ## Node Reference
 
@@ -382,9 +511,7 @@ Inputs:
 Gameplay Tag
 Exact Match
 Default
-<Case 1>
-<Case 2>
-...
+Cases...
 ```
 
 Output:
@@ -393,12 +520,14 @@ Output:
 Return Value
 ```
 
-Additional Details options:
+Details:
 
 ```text
 Case Type
-Literal (when applicable)
+Literal      // When applicable
 ```
+
+---
 
 ### Select (Gameplay Tag Container)
 
@@ -407,11 +536,9 @@ Inputs:
 ```text
 Gameplay Tag Container
 Exact Match
-Match All      // Only for Container Cases
+Match All    // Only with Container Cases
 Default
-<Case 1>
-<Case 2>
-...
+Cases...
 ```
 
 Output:
@@ -420,12 +547,14 @@ Output:
 Return Value
 ```
 
-Additional Details options:
+Details:
 
 ```text
 Case Type
-Literal (when applicable)
+Literal      // When applicable
 ```
+
+---
 
 ### Switch (Gameplay Tag)
 
@@ -440,17 +569,17 @@ Exact Match
 Outputs:
 
 ```text
-<Case 1>
-<Case 2>
-...
+Cases...
 Default
 ```
 
-Additional Details option:
+Details:
 
 ```text
 Case Type
 ```
+
+---
 
 ### Switch (Gameplay Tag Container)
 
@@ -460,33 +589,39 @@ Inputs:
 Exec
 Gameplay Tag Container
 Exact Match
-Match All      // Only for Container Cases
+Match All    // Only with Container Cases
 ```
 
 Outputs:
 
 ```text
-<Case 1>
-<Case 2>
-...
+Cases...
 Default
 ```
 
-Additional Details option:
+Details:
 
 ```text
 Case Type
 ```
 
+---
+
 ## Compilation
 
-Gameplay Tag Select & Switch contains an **UncookedOnly** Blueprint node module.
+Gameplay Tag Select & Switch uses an **UncookedOnly** Blueprint-node module.
 
-The custom nodes are editor/compiler nodes and do not require a custom Gameplay Tag runtime system.
+The custom nodes are expanded during Blueprint compilation into Unreal Engine's native Blueprint logic, including:
 
-During Blueprint compilation, the nodes expand into Unreal Engine Blueprint operations using native Gameplay Tag matching and standard Blueprint flow/value nodes.
+* Gameplay Tag matching operations
+* Standard Select behavior
+* Standard execution flow nodes
 
-The plugin therefore does not require its custom Blueprint node implementation in packaged game runtime code.
+The plugin does not introduce a custom Gameplay Tag runtime system.
+
+The custom editor node implementation is not required in packaged game runtime code.
+
+---
 
 ## Installation
 
@@ -498,7 +633,7 @@ YourProject/
     GameplayTagSelectAndSwitch/
 ```
 
-The plugin directory should contain:
+The plugin structure should include:
 
 ```text
 GameplayTagSelectAndSwitch/
@@ -512,18 +647,28 @@ Then:
 1. Regenerate project files if required.
 2. Build the Editor target.
 3. Start Unreal Editor.
-4. Enable **Gameplay Tag Select & Switch** if it is not already enabled.
-5. Restart the editor if requested.
+4. Enable **Gameplay Tag Select & Switch** if required.
+5. Restart the editor if prompted.
+
+---
 
 ## Usage
 
 ### Create a Node
 
-In a Blueprint graph:
+Right-click inside a Blueprint graph and search for:
 
-1. Right-click to open the Blueprint Action Menu.
-2. Search for `Select` or `Switch`.
-3. Choose one of:
+```text
+Select
+```
+
+or:
+
+```text
+Switch
+```
+
+Then choose one of:
 
 ```text
 Select (Gameplay Tag)
@@ -534,47 +679,30 @@ Switch (Gameplay Tag Container)
 
 ### Configure Cases
 
-Select the node and open its Details panel.
+1. Select the node.
+2. Open the Details panel.
+3. Choose the desired **Case Type**.
+4. Add Gameplay Tag or Gameplay Tag Container cases.
+5. Arrange them in the desired priority order.
+6. Configure **Exact Match**.
+7. Configure **Match All** when using Container-to-Container matching.
+8. Connect Select values or Switch execution outputs.
 
-Choose:
+For Select nodes, the wildcard value type is automatically resolved when a typed value is connected.
 
-```text
-Case Type
-```
-
-Then configure the case list.
-
-For Select nodes, connect or enter the corresponding values.
-
-For Switch nodes, connect the desired execution outputs.
-
-Set:
-
-```text
-Exact Match
-```
-
-as required.
-
-For Gameplay Tag Container to Gameplay Tag Container matching, also configure:
-
-```text
-Match All
-```
-
-as required.
+---
 
 ## Design Scope
 
 Gameplay Tag Select & Switch is intentionally focused on one task:
 
-> Use Gameplay Tag matching to drive native-style Blueprint Select and Switch behavior.
+> Use Gameplay Tag matching to drive familiar Blueprint Select and Switch workflows.
 
 The plugin does not:
 
-- Modify Gameplay Tags themselves
-- Introduce a custom Gameplay Tag runtime system
-- Replace Unreal Engine's existing Gameplay Tag API
-- Require gameplay code to depend on custom runtime classes
+* Modify Gameplay Tags
+* Replace Unreal Engine's Gameplay Tag system
+* Introduce a custom runtime Gameplay Tag framework
+* Require gameplay code to depend on custom runtime classes
 
-Its goal is to make common Gameplay Tag selection and execution-routing patterns more expressive while remaining familiar to Blueprint users.
+Its goal is to make Gameplay Tag-driven Blueprint logic more compact, readable, and flexible while remaining familiar to Unreal Engine developers.
