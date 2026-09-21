@@ -2,7 +2,7 @@
 
 CustomViewportViews is an Unreal Engine editor plugin that adds reusable custom viewing directions directly to the Level Editor viewport.
 
-It allows custom orthographic and perspective views to behave more like Unreal Engine's built-in Perspective, Top, Front, and Side views, including toolbar integration, viewport persistence, selection centering, and orthographic cursor-centered zoom.
+It allows custom orthographic and perspective views to behave more like Unreal Engine's built-in Perspective, Top, Front, and Side views, including toolbar integration, viewport persistence and selection centering.
 
 ## Overview
 
