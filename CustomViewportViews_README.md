@@ -27,14 +27,11 @@ CustomViewportViews adds dedicated editor viewport presets for these workflows.
 * Orthographic and perspective presets
 * Native-style viewport switching
 * Custom Camera toolbar name
-* Custom Camera toolbar icon
 * Persistent custom viewport state
 * Per-viewport saved preset
 * Correct persistence when returning to native Unreal Engine views
 * Selection-centered view switching
-* Cursor-centered orthographic zoom
 * Configurable default custom view
-* No runtime dependency for gameplay camera behavior
 
 ## Included Presets
 
@@ -92,14 +89,6 @@ This allows a workflow such as:
 3. Continue editing with the selected actor already centered in the viewport.
 
 Startup restoration does not intentionally re-center the viewport around the current selection.
-
-## Orthographic Cursor-Centered Zoom
-
-Custom orthographic views preserve the world position underneath the mouse cursor while using the mouse wheel.
-
-Instead of always zooming toward the center of the viewport, the zoom behaves similarly to Unreal Engine's native orthographic viewport navigation.
-
-This is particularly useful for large 2D or grid-based scenes.
 
 ## Viewport Persistence
 
@@ -168,39 +157,6 @@ The plugin uses a dedicated viewport layout entity so that Unreal Engine can cor
 
 The toolbar integration updates the existing Camera/View control with the active custom view name and icon.
 
-## Technical Notes
-
-The plugin intentionally separates:
-
-* Custom viewport identity
-* Native backing viewport type
-* Custom camera orientation
-* Saved preset state
-
-Orthographic custom views use Unreal Engine's orthographic viewport behavior while applying a custom viewing orientation.
-
-The toolbar may be rebuilt asynchronously by Unreal Engine's improved viewport toolbar system. The plugin therefore rebinds newly generated toolbar widgets when necessary without continuously forcing ToolMenu refreshes.
-
-This avoids unnecessary toolbar reconstruction and visible UI flickering.
-
-## Compatibility
-
-Currently tested and intended for:
-
-```text
-Unreal Engine 5.8
-```
-
-The plugin depends on editor APIs related to:
-
-* Level Editor viewport layouts
-* Level viewport clients
-* ToolMenus
-* Improved viewport toolbar
-* Slate editor widgets
-
-These APIs can change between Unreal Engine versions, so other versions should only be listed as supported after explicit testing.
-
 ## Installation
 
 Copy the plugin folder into your project's Plugins directory:
@@ -229,22 +185,3 @@ It does not replace or modify:
 * Packaged-game rendering behavior
 
 Its purpose is to improve the Level Editor scene-editing workflow.
-
-## Recommended Testing
-
-When modifying the plugin or updating Unreal Engine, the following cases are useful as regression tests:
-
-```text
-Perspective → 2D Top Down → Restart
-2D Top Down → Isometric → Restart
-2D Top Down → Perspective → Restart
-2D Top Down → Top → Restart
-```
-
-For multi-viewport layouts, verify that different viewport slots restore independently.
-
-Orthographic views should also be tested for cursor-centered zoom after switching views and immediately after editor startup.
-
-## License
-
-Use the license appropriate for your distribution or marketplace package.
