@@ -1,6 +1,6 @@
 # Interface Implementation Colorizer
 
-**Interface Implementation Colorizer** is an editor-only Unreal Engine plugin that colors Blueprint Interface members in **My Blueprint > Interfaces** according to their implementation state.
+**Interface Implementation Colorizer** is an editor-only Unreal Engine plugin that colors Blueprint Interface members in **My Blueprint > Interfaces** according to their implementation state (Update when the blueprint is opened or compilation is completed).
 
 It makes it possible to see which interface events and functions are unimplemented, empty, or implemented without opening each graph individually.
 
@@ -152,17 +152,6 @@ Each of the following settings can be assigned to **Unimplemented**, **Empty**, 
 - **Executable Logic Nodes Exist**
 
 ### Behavior
-
-**Refresh Interval**  
-Controls how often visible **My Blueprint** panels are rescanned and recolored.
-
-Default:
-
-```text
-0.20 seconds
-```
-
-The setting can be adjusted from `0.05` to `2.0` seconds.
 
 **Include Inherited Interfaces**  
 Controls whether Blueprint Interfaces inherited from parent Blueprints/classes are also included.
